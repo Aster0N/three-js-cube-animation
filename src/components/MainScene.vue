@@ -35,13 +35,14 @@ export default {
 		scene.add(camera);
 
 		// color, intensity, distance, decay
-		const light = new THREE.PointLight(0xffffff, 3, 100);
+		const light = new THREE.PointLight(0xffffff, 5, 100);
 		light.position.set(10, 10, 10);
 		scene.add(light);
 
 		const canvas = document.querySelector("#canvas-field");
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		renderer.setSize(this.sizes.width, this.sizes.height);
+		const controls = new OrbitControls(camera, renderer.domElement);
 
 		const geometry = new THREE.BoxGeometry(5, 5, 5);
 		const material = new THREE.MeshPhysicalMaterial({
@@ -50,8 +51,6 @@ export default {
 		});
 		const cube = new THREE.Mesh(geometry, material);
 		scene.add(cube);
-
-		const controls = new OrbitControls(camera, renderer.domElement);
 
 		const tranformBtn = document.querySelector(".transform-button");
 		tranformBtn.addEventListener("click", () => {
@@ -89,7 +88,7 @@ export default {
 			gsap.to(cube.material.color, {
 				r: color.r,
 				g: color.g,
-				blue: color.blue,
+				b: color.blue,
 			});
 		});
 	},
