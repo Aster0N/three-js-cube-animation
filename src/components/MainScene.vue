@@ -110,25 +110,4 @@ export default {
 </script>
 
 <style scoped>
-.transform-button {
-	position: absolute;
-	bottom: 50px;
-	left: 0;
-	right: 0;
-	width: 100px;
-	padding: 10px;
-	margin: 0 auto;
-	font-size: 1.2em;
-	outline: none;
-	border: 2px solid transparent;
-	transition: all 0.3s ease-in-out;
-	cursor: pointer;
-	background-color: #000;
-	color: #fff;
-}
-
-.transform-button:hover {
-	background-color: transparent;
-	border: 2px solid #9198e2;
-}
 </style>
