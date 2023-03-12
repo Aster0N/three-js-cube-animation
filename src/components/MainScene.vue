@@ -1,7 +1,6 @@
 <template>
 	<div class="scene">
 		<canvas id="canvas-field"></canvas>
-		<button class="transform-button">click</button>
 	</div>
 </template>
 
@@ -15,6 +14,23 @@ export default {
 	data() {
 		return {
 			geometry: null,
+			cubeVertices: [
+				// front
+				-1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1,
+				// back
+				1, -1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1,
+				-1,
+				// left
+				-1, -1, -1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1,
+				1,
+				// right
+				1, -1, 1, 1, -1, -1, 1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1,
+				// top
+				1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, 1,
+				// bottom
+				1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1,
+				-1,
+			],
 			sizes: {
 				width: window.innerWidth,
 				height: window.innerHeight,
@@ -24,7 +40,6 @@ export default {
 	mounted() {
 		const scene = new THREE.Scene();
 		scene.background = new THREE.Color(0x222529);
-		// fov, width, height, how close and far can I zoom before object disappear
 		const camera = new THREE.PerspectiveCamera(
 			45,
 			window.innerWidth / window.innerHeight,
@@ -34,9 +49,9 @@ export default {
 		camera.position.set(1.75, 1.75, 25);
 		scene.add(camera);
 
-		// color, intensity, distance, decay
-		const light = new THREE.PointLight(0xffffff, 5, 100);
-		light.position.set(10, 10, 10);
+		const light = new THREE.DirectionalLight(0xffffff, 2);
+		light.position.set(1, 1, 1); //default; light shining from top
+		light.castShadow = true; // default false
 		scene.add(light);
 
 		const canvas = document.querySelector("#canvas-field");
@@ -44,21 +59,20 @@ export default {
 		renderer.setSize(this.sizes.width, this.sizes.height);
 		const controls = new OrbitControls(camera, renderer.domElement);
 
-		const geometry = new THREE.BoxGeometry(5, 5, 5);
-		const material = new THREE.MeshPhysicalMaterial({
+		// GEOMETRY
+		const geometry = new THREE.BufferGeometry();
+		const vertices = new Float32Array(this.cubeVertices);
+		geometry.setAttribute(
+			"position",
+			new THREE.BufferAttribute(vertices, 3)
+		);
+		const material = new THREE.MeshStandardMaterial({
 			color: 0x30336b,
-			roughness: 0.4,
+			flatShading: true,
+			// wireframe: true,
 		});
 		const cube = new THREE.Mesh(geometry, material);
 		scene.add(cube);
-
-		const tranformBtn = document.querySelector(".transform-button");
-		tranformBtn.addEventListener("click", () => {
-			for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-				var vertex = geometry.vertices[i];
-				vertex.normalize().multiplyScalar(550);
-			}
-		});
 
 		function animate() {
 			requestAnimationFrame(animate);
@@ -88,7 +102,7 @@ export default {
 			gsap.to(cube.material.color, {
 				r: color.r,
 				g: color.g,
-				b: color.blue,
+				b: color.b,
 			});
 		});
 	},
