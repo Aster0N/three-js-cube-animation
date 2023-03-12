@@ -1,6 +1,75 @@
 <template>
 	<div class="scene">
 		<canvas id="canvas-field"></canvas>
+		<div class="content">
+			<h1 class="content-title">THREE JS</h1>
+			<div class="content-description">
+				<p class="content-text-1">
+					"Sed ut perspiciatis unde omnis iste natus error sit
+					voluptatem accusantium doloremque laudantium, totam rem
+					aperiam, eaque ipsa quae ab illo inventore veritatis et
+					quasi architecto beatae vitae dicta sunt explicabo. Nemo
+					enim ipsam voluptatem quia voluptas sit aspernatur aut odit
+					aut fugit, sed quia consequuntur magni dolores eos qui
+					ratione voluptatem sequi nesciunt. Quis autem vel eum iure
+					reprehenderit qui in ea voluptate velit esse quam nihil
+					molestiae consequatur, vel illum qui dolorem eum fugiat quo
+					voluptas nulla pariatur?"
+				</p>
+				<p class="content-text-2">
+					"But I must explain to you how all this mistaken idea of
+					denouncing pleasure and praising pain was born and I will
+					give you a complete account of the system, and expound the
+					actual teachings of the great explorer of the truth, the
+					master-builder of human happiness. No one rejects, dislikes,
+					or avoids pleasure itself, because it is pleasure, but
+					because those who do not know how to pursue pleasure
+					rationally encounter consequences that are extremely
+					painful. Nor again is there anyone who loves or pursues or
+					desires to obtain pain of itself, because it is pain, but
+					because occasionally circumstances occur in which toil and
+					pain can procure him some great pleasure. To take a trivial
+					example, which of us ever undertakes laborious physical
+					exercise, except to obtain some advantage from it? But who
+					has any right to find fault with a man who chooses to enjoy
+					a pleasure that has no annoying consequences, or one who
+					avoids a pain that produces no resultant pleasure?"
+				</p>
+			</div>
+			<div class="content-description">
+				<p class="content-text-1">
+					"Sed ut perspiciatis unde omnis iste natus error sit
+					voluptatem accusantium doloremque laudantium, totam rem
+					aperiam, eaque ipsa quae ab illo inventore veritatis et
+					quasi architecto beatae vitae dicta sunt explicabo. Nemo
+					enim ipsam voluptatem quia voluptas sit aspernatur aut odit
+					aut fugit, sed quia consequuntur magni dolores eos qui
+					ratione voluptatem sequi nesciunt. Quis autem vel eum iure
+					reprehenderit qui in ea voluptate velit esse quam nihil
+					molestiae consequatur, vel illum qui dolorem eum fugiat quo
+					voluptas nulla pariatur?"
+				</p>
+				<p class="content-text-2">
+					"But I must explain to you how all this mistaken idea of
+					denouncing pleasure and praising pain was born and I will
+					give you a complete account of the system, and expound the
+					actual teachings of the great explorer of the truth, the
+					master-builder of human happiness. No one rejects, dislikes,
+					or avoids pleasure itself, because it is pleasure, but
+					because those who do not know how to pursue pleasure
+					rationally encounter consequences that are extremely
+					painful. Nor again is there anyone who loves or pursues or
+					desires to obtain pain of itself, because it is pain, but
+					because occasionally circumstances occur in which toil and
+					pain can procure him some great pleasure. To take a trivial
+					example, which of us ever undertakes laborious physical
+					exercise, except to obtain some advantage from it? But who
+					has any right to find fault with a man who chooses to enjoy
+					a pleasure that has no annoying consequences, or one who
+					avoids a pain that produces no resultant pleasure?"
+				</p>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -46,18 +115,27 @@ export default {
 			0.1,
 			1000
 		);
-		camera.position.set(1.75, 1.75, 25);
 		scene.add(camera);
 
 		const light = new THREE.DirectionalLight(0xffffff, 2);
-		light.position.set(1, 1, 1); //default; light shining from top
-		light.castShadow = true; // default false
+		light.position.set(0, 1, 2);
+		light.castShadow = true;
 		scene.add(light);
 
 		const canvas = document.querySelector("#canvas-field");
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		renderer.setSize(this.sizes.width, this.sizes.height);
 		const controls = new OrbitControls(camera, renderer.domElement);
+		controls.enableZoom = false;
+		controls.enableRotate = false;
+		controls.enablePan = false;
+
+		// controls.constraint.smoothZoom = true;
+		// controls.constraint.zoomDampingFactor = 0.2;
+		// controls.constraint.smoothZoomSpeed = 5.0;
+
+		camera.position.set(1.75, 1.75, 25);
+		controls.update();
 
 		// GEOMETRY
 		const geometry = new THREE.BufferGeometry();
@@ -81,6 +159,14 @@ export default {
 			renderer.render(scene, camera);
 		}
 		animate();
+
+		document.addEventListener("scroll", () => {
+			if (window.scrollY >= 150) {
+				camera.position.set(1.75, 1.75, 15);
+			} else {
+				camera.position.set(1.75, 1.75, 25);
+			}
+		});
 
 		window.addEventListener("resize", () => {
 			this.sizes.width = window.innerWidth;
@@ -110,4 +196,33 @@ export default {
 </script>
 
 <style scoped>
+#canvas-field {
+	z-index: -1;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+}
+
+.content {
+	color: #ecf0f1;
+	padding: 100px 70px;
+}
+
+.content-title {
+	margin-bottom: 50px;
+}
+
+.content-description {
+	width: 60vw;
+}
+
+.content-description p:not(:last-child) {
+	margin-bottom: 20px;
+}
+
+.content-description p:last-child {
+	margin-top: 50vh;
+}
 </style>
