@@ -162,9 +162,9 @@ export default {
 
 		document.addEventListener("scroll", () => {
 			if (window.scrollY >= 150) {
-				camera.position.set(1.75, 1.75, 15);
+				gsap.to(camera.position, { z: 15, duration: 2 });
 			} else {
-				camera.position.set(1.75, 1.75, 25);
+				gsap.to(camera.position, { z: 55, duration: 2 });
 			}
 		});
 
