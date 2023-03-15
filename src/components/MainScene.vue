@@ -1,75 +1,6 @@
 <template>
 	<div class="scene">
 		<canvas id="canvas-field"></canvas>
-		<div class="content">
-			<h1 class="content-title">THREE JS</h1>
-			<div class="content-description">
-				<p class="content-text-1">
-					"Sed ut perspiciatis unde omnis iste natus error sit
-					voluptatem accusantium doloremque laudantium, totam rem
-					aperiam, eaque ipsa quae ab illo inventore veritatis et
-					quasi architecto beatae vitae dicta sunt explicabo. Nemo
-					enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-					aut fugit, sed quia consequuntur magni dolores eos qui
-					ratione voluptatem sequi nesciunt. Quis autem vel eum iure
-					reprehenderit qui in ea voluptate velit esse quam nihil
-					molestiae consequatur, vel illum qui dolorem eum fugiat quo
-					voluptas nulla pariatur?"
-				</p>
-				<p class="content-text-2">
-					"But I must explain to you how all this mistaken idea of
-					denouncing pleasure and praising pain was born and I will
-					give you a complete account of the system, and expound the
-					actual teachings of the great explorer of the truth, the
-					master-builder of human happiness. No one rejects, dislikes,
-					or avoids pleasure itself, because it is pleasure, but
-					because those who do not know how to pursue pleasure
-					rationally encounter consequences that are extremely
-					painful. Nor again is there anyone who loves or pursues or
-					desires to obtain pain of itself, because it is pain, but
-					because occasionally circumstances occur in which toil and
-					pain can procure him some great pleasure. To take a trivial
-					example, which of us ever undertakes laborious physical
-					exercise, except to obtain some advantage from it? But who
-					has any right to find fault with a man who chooses to enjoy
-					a pleasure that has no annoying consequences, or one who
-					avoids a pain that produces no resultant pleasure?"
-				</p>
-			</div>
-			<div class="content-description">
-				<p class="content-text-1">
-					"Sed ut perspiciatis unde omnis iste natus error sit
-					voluptatem accusantium doloremque laudantium, totam rem
-					aperiam, eaque ipsa quae ab illo inventore veritatis et
-					quasi architecto beatae vitae dicta sunt explicabo. Nemo
-					enim ipsam voluptatem quia voluptas sit aspernatur aut odit
-					aut fugit, sed quia consequuntur magni dolores eos qui
-					ratione voluptatem sequi nesciunt. Quis autem vel eum iure
-					reprehenderit qui in ea voluptate velit esse quam nihil
-					molestiae consequatur, vel illum qui dolorem eum fugiat quo
-					voluptas nulla pariatur?"
-				</p>
-				<p class="content-text-2">
-					"But I must explain to you how all this mistaken idea of
-					denouncing pleasure and praising pain was born and I will
-					give you a complete account of the system, and expound the
-					actual teachings of the great explorer of the truth, the
-					master-builder of human happiness. No one rejects, dislikes,
-					or avoids pleasure itself, because it is pleasure, but
-					because those who do not know how to pursue pleasure
-					rationally encounter consequences that are extremely
-					painful. Nor again is there anyone who loves or pursues or
-					desires to obtain pain of itself, because it is pain, but
-					because occasionally circumstances occur in which toil and
-					pain can procure him some great pleasure. To take a trivial
-					example, which of us ever undertakes laborious physical
-					exercise, except to obtain some advantage from it? But who
-					has any right to find fault with a man who chooses to enjoy
-					a pleasure that has no annoying consequences, or one who
-					avoids a pain that produces no resultant pleasure?"
-				</p>
-			</div>
-		</div>
 	</div>
 </template>
 
@@ -82,7 +13,12 @@ export default {
 	name: "scene",
 	data() {
 		return {
-			geometry: null,
+			scrolledUpAfterTrigger: false,
+			cameraPosition: {
+				x: 2,
+				y: 2,
+				z: 30,
+			},
 			cubeVertices: [
 				// front
 				-1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1,
@@ -130,11 +66,11 @@ export default {
 		controls.enableRotate = false;
 		controls.enablePan = false;
 
-		// controls.constraint.smoothZoom = true;
-		// controls.constraint.zoomDampingFactor = 0.2;
-		// controls.constraint.smoothZoomSpeed = 5.0;
-
-		camera.position.set(1.75, 1.75, 25);
+		camera.position.set(
+			this.cameraPosition.x,
+			this.cameraPosition.y,
+			this.cameraPosition.z
+		);
 		controls.update();
 
 		// GEOMETRY
@@ -160,11 +96,23 @@ export default {
 		}
 		animate();
 
+		// TODO SCROLL TRIGGER GSAP
 		document.addEventListener("scroll", () => {
 			if (window.scrollY >= 150) {
-				gsap.to(camera.position, { z: 15, duration: 2 });
+				this.scrolledUpAfterTrigger = true;
+				this.cameraPosition.z -= 5;
+				gsap.to(camera.position, {
+					z: this.cameraPosition.z,
+					duration: 2,
+				});
 			} else {
-				gsap.to(camera.position, { z: 55, duration: 2 });
+				if (this.scrolledUpAfterTrigger) {
+					this.cameraPosition.z += 5;
+					gsap.to(camera.position, {
+						z: this.cameraPosition.z,
+						duration: 2,
+					});
+				}
 			}
 		});
 
@@ -205,24 +153,7 @@ export default {
 	left: 0;
 }
 
-.content {
-	color: #ecf0f1;
-	padding: 100px 70px;
-}
-
-.content-title {
-	margin-bottom: 50px;
-}
-
-.content-description {
-	width: 60vw;
-}
-
-.content-description p:not(:last-child) {
-	margin-bottom: 20px;
-}
-
-.content-description p:last-child {
-	margin-top: 50vh;
+.scene {
+	height: 300vh;
 }
 </style>
