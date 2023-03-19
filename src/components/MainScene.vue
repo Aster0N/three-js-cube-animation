@@ -7,7 +7,8 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import gsap from "gsap";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default {
 	name: "scene",
@@ -88,6 +89,20 @@ export default {
 		const cube = new THREE.Mesh(geometry, material);
 		scene.add(cube);
 
+		// GSAP animation
+		gsap.registerPlugin(ScrollTrigger);
+		const timeline = gsap.timeline();
+
+		timeline.fromTo(camera.position, { z: 30 }, { z: 10 });
+		ScrollTrigger.create({
+			animation: timeline,
+			trigger: ".scene",
+			start: "top top",
+			end: "500px",
+			scrub: true,
+			markers: true,
+		});
+
 		function animate() {
 			requestAnimationFrame(animate);
 			cube.rotation.x += 0.005;
@@ -95,26 +110,6 @@ export default {
 			renderer.render(scene, camera);
 		}
 		animate();
-
-		// TODO SCROLL TRIGGER GSAP
-		document.addEventListener("scroll", () => {
-			if (window.scrollY >= 150) {
-				this.scrolledUpAfterTrigger = true;
-				this.cameraPosition.z -= 5;
-				gsap.to(camera.position, {
-					z: this.cameraPosition.z,
-					duration: 2,
-				});
-			} else {
-				if (this.scrolledUpAfterTrigger) {
-					this.cameraPosition.z += 5;
-					gsap.to(camera.position, {
-						z: this.cameraPosition.z,
-						duration: 2,
-					});
-				}
-			}
-		});
 
 		window.addEventListener("resize", () => {
 			this.sizes.width = window.innerWidth;
@@ -154,6 +149,6 @@ export default {
 }
 
 .scene {
-	height: 300vh;
+	height: 400vh;
 }
 </style>
