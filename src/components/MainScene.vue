@@ -37,6 +37,8 @@ export default {
 				1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1,
 				-1,
 			],
+			cubeXSpeed: 0.005,
+			cubeYSpeed: 0.005,
 			sizes: {
 				width: window.innerWidth,
 				height: window.innerHeight,
@@ -91,24 +93,46 @@ export default {
 
 		// GSAP animation
 		gsap.registerPlugin(ScrollTrigger);
-		const timeline = gsap.timeline();
 
-		timeline.fromTo(camera.position, { z: 30 }, { z: 10 });
-		ScrollTrigger.create({
-			animation: timeline,
-			trigger: ".scene",
-			start: "top top",
-			end: "500px",
-			scrub: true,
-			markers: true,
-		});
+		let tl = gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: ".scene",
+					start: "top top",
+					end: "30%",
+					scrub: 2,
+					// markers: true,
+				},
+			})
+			.to(camera.position, { z: 10 });
 
-		function animate() {
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: ".scene",
+				start: "30%",
+				end: "60%",
+				scrub: 1,
+				// markers: true,
+			},
+		}).to(this, { cubeXSpeed: 0.05, cubeYSpeed: 0.05 });
+
+		gsap.timeline({
+			scrollTrigger: {
+				trigger: ".scene",
+				start: "60%",
+				end: "85%",
+				scrub: 1,
+				// markers: true,
+			},
+		}).to(this, { cubeXSpeed: 0.005, cubeYSpeed: 0.005 });
+
+		const animate = () => {
 			requestAnimationFrame(animate);
-			cube.rotation.x += 0.005;
-			cube.rotation.y += 0.005;
+			cube.rotation.x += this.cubeXSpeed;
+			cube.rotation.y += this.cubeYSpeed;
 			renderer.render(scene, camera);
-		}
+			camera.lookAt(0, 0, 0);
+		};
 		animate();
 
 		window.addEventListener("resize", () => {
@@ -149,6 +173,6 @@ export default {
 }
 
 .scene {
-	height: 400vh;
+	height: 600vh;
 }
 </style>
